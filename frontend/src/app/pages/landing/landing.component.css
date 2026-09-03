@@ -1,0 +1,5 @@
+:host { display: block; }
+
+/* Section spacing */
+:host section { padding: 90px 0; }
+@media (max-width: 767.98px) { :host section { padding: 60px 0; } }

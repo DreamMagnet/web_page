@@ -1,0 +1,273 @@
+<!-- Cover header -->
+<section
+  style="
+    background: linear-gradient(135deg, #4c1d95 0%, #6366f1 60%, #22d3ee 100%);
+    min-height: 220px;
+    position: relative;
+    overflow: hidden;
+  "
+>
+  <div
+    style="
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.14), transparent 40%),
+        radial-gradient(circle at 80% 60%, rgba(255,255,255,0.12), transparent 40%);
+    "
+  ></div>
+  <div class="container position-relative py-5">
+    <div class="d-flex align-items-center gap-3 text-white anim-fade-up">
+      <i class="bi bi-person-workspace fs-4"></i>
+      <span class="small text-uppercase" style="letter-spacing: 0.14em; opacity: 0.85;">
+        Your workspace
+      </span>
+    </div>
+    <h1 class="text-white fw-bold mt-2 anim-fade-up delay-1" style="font-size: clamp(1.8rem, 3vw, 2.4rem);">
+      Welcome back, {{ auth.currentUser()?.full_name }}
+    </h1>
+    <p class="text-white-50 mb-0 anim-fade-up delay-2">
+      Manage your profile, review activity, and keep your account healthy.
+    </p>
+  </div>
+</section>
+
+<section class="py-5" style="margin-top: -60px;">
+  <div class="container">
+
+    <!-- Profile identity card (spans full width, negative margin gives cover overlap) -->
+    <div class="card-elevated p-4 p-md-5 mb-4" appReveal>
+      <div class="row g-4 align-items-center">
+        <div class="col-md-auto">
+          <div class="position-relative">
+            <div class="avatar-circle" style="width: 96px; height: 96px; font-size: 2rem; border-width: 4px;">
+              {{ initials() }}
+            </div>
+            <span
+              class="position-absolute"
+              style="bottom: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%;
+                     background: #10b981; border: 3px solid #fff;"
+              title="Online"
+            ></span>
+          </div>
+        </div>
+        <div class="col">
+          <h2 class="h4 fw-bold mb-1">{{ auth.currentUser()?.full_name }}</h2>
+          <div class="d-flex flex-wrap gap-3 text-muted small">
+            <span><i class="bi bi-envelope me-1"></i>{{ auth.currentUser()?.email }}</span>
+            <span><i class="bi bi-telephone me-1"></i>{{ auth.currentUser()?.phone }}</span>
+            <span>
+              <i class="bi bi-shield-check me-1 text-success"></i>
+              Verified account
+            </span>
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <span class="hero-eyebrow-x" style="background: var(--brand-50); color: var(--brand-700); border-color: var(--brand-50);">
+            <span class="live-dot"></span>
+            Session active
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics row -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3" appReveal>
+        <div class="metric-card">
+          <div class="d-flex justify-content-between">
+            <div class="label">Days active</div>
+            <i class="bi bi-calendar-check text-brand"></i>
+          </div>
+          <div class="value"><span [appCountUp]="daysActive()"></span></div>
+          <div class="delta"><i class="bi bi-arrow-up"></i> Since signup</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3" appReveal [revealDelay]="80">
+        <div class="metric-card">
+          <div class="d-flex justify-content-between">
+            <div class="label">Security</div>
+            <i class="bi bi-shield-lock text-brand"></i>
+          </div>
+          <div class="value">
+            <span [appCountUp]="securityScore()" suffix="%"></span>
+          </div>
+          <div class="delta">{{ securityLabel() }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3" appReveal [revealDelay]="160">
+        <div class="metric-card">
+          <div class="d-flex justify-content-between">
+            <div class="label">Sessions</div>
+            <i class="bi bi-laptop text-brand"></i>
+          </div>
+          <div class="value"><span [appCountUp]="1"></span></div>
+          <div class="delta">Only this device</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3" appReveal [revealDelay]="240">
+        <div class="metric-card">
+          <div class="d-flex justify-content-between">
+            <div class="label">Profile</div>
+            <i class="bi bi-check2-circle text-brand"></i>
+          </div>
+          <div class="value"><span [appCountUp]="100" suffix="%"></span></div>
+          <div class="delta">Complete</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Edit form (main column) -->
+      <div class="col-lg-8" appReveal>
+        <div class="card-elevated p-4 p-md-5">
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <span class="feature-icon-x mb-0"><i class="bi bi-person-gear"></i></span>
+            <div>
+              <h3 class="h5 fw-bold mb-0">Edit profile</h3>
+              <p class="text-muted small mb-0">
+                Update your personal details or change your password.
+              </p>
+            </div>
+          </div>
+
+          @if (errorMsg(); as msg) {
+            <div class="alert alert-danger d-flex align-items-center py-2">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <span>{{ msg }}</span>
+            </div>
+          }
+          @if (successMsg(); as msg) {
+            <div class="alert alert-success d-flex align-items-center py-2">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <span>{{ msg }}</span>
+            </div>
+          }
+
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="full_name" class="form-label small fw-semibold">Full name</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input
+                    id="full_name"
+                    type="text"
+                    class="form-control"
+                    formControlName="full_name"
+                    autocomplete="name"
+                    [class.is-invalid]="form.controls.full_name.touched && form.controls.full_name.invalid"
+                  />
+                  <div class="invalid-feedback">Full name is required.</div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="phone" class="form-label small fw-semibold">Phone</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                  <input
+                    id="phone"
+                    type="tel"
+                    class="form-control"
+                    formControlName="phone"
+                    autocomplete="tel"
+                    [class.is-invalid]="form.controls.phone.touched && form.controls.phone.invalid"
+                  />
+                  <div class="invalid-feedback">Phone number is required.</div>
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <i class="bi bi-shield-lock text-brand"></i>
+              <h4 class="h6 fw-semibold mb-0">Change password</h4>
+            </div>
+            <p class="text-muted small mb-3">
+              Leave blank to keep your current password.
+            </p>
+
+            <div class="mb-4">
+              <label for="new_password" class="form-label small fw-semibold">New password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-key"></i></span>
+                <input
+                  id="new_password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="new_password"
+                  autocomplete="new-password"
+                  placeholder="Min. 6 characters"
+                />
+                <span
+                  class="input-group-text password-toggle"
+                  role="button"
+                  tabindex="0"
+                  (click)="togglePassword()"
+                  (keydown.enter)="togglePassword()"
+                  aria-label="Toggle password visibility"
+                >
+                  <i class="bi" [class.bi-eye]="!showPassword()" [class.bi-eye-slash]="showPassword()"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+              <button type="submit" class="btn btn-primary px-4" [disabled]="submitting()">
+                @if (submitting()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  <span>Saving&hellip;</span>
+                } @else {
+                  <i class="bi bi-check2-circle me-2"></i>
+                  <span>Save changes</span>
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Sidebar: security ring + timeline -->
+      <div class="col-lg-4">
+        <div class="card-elevated p-4 text-center mb-4" appReveal [revealDelay]="100">
+          <h5 class="fw-bold mb-3">Security score</h5>
+          <div class="security-ring mx-auto" [style.--pct]="securityScore()">
+            <div>
+              <div class="pct">{{ securityScore() }}%</div>
+              <div class="lbl">{{ securityLabel() }}</div>
+            </div>
+          </div>
+          <p class="text-muted small mt-3 mb-0">
+            Add a phone number and use a strong password to reach 100%.
+          </p>
+        </div>
+
+        <div class="card-elevated p-4" appReveal [revealDelay]="200">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">Recent activity</h5>
+            <span class="badge bg-brand-soft text-brand">Live</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-title">Signed in successfully</div>
+              <div class="timeline-time">Just now &middot; this device</div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-title">Profile refreshed</div>
+              <div class="timeline-time">
+                {{ auth.currentUser()?.updated_at | date:'medium' }}
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-title">Account created</div>
+              <div class="timeline-time">
+                {{ auth.currentUser()?.created_at | date:'mediumDate' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,141 @@
+<section class="auth-shell">
+  <div class="container">
+    <div class="auth-card">
+      <div class="auth-visual">
+        <a routerLink="/" class="auth-brand anim-fade-up">
+          <app-logo [size]="40" [glow]="true"></app-logo>
+          <span>G-AI</span>
+        </a>
+
+        <div>
+          <span class="hero-eyebrow mb-3 anim-fade-up delay-1">
+            <i class="bi bi-shield-check"></i> Trusted &amp; secure
+          </span>
+          <h2 class="auth-headline anim-fade-up delay-2">
+            Welcome back to the future of work.
+          </h2>
+          <p class="auth-sub anim-fade-up delay-3">
+            Sign in to access your personalized workspace and pick up right
+            where you left off.
+          </p>
+
+          <ul class="auth-perks anim-fade-up delay-4">
+            <li>
+              <span class="bi bi-lightning-charge-fill"></span>
+              <span>Instant access from any device</span>
+            </li>
+            <li>
+              <span class="bi bi-lock-fill"></span>
+              <span>Bank-grade bcrypt encryption</span>
+            </li>
+            <li>
+              <span class="bi bi-magic"></span>
+              <span>Personalized AI-powered experience</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="auth-testimonial anim-fade-up delay-4">
+          <p class="quote">
+            &ldquo;G-AI made onboarding painless &mdash; I was in and productive
+            in under a minute.&rdquo;
+          </p>
+          <div class="who">
+            <span class="avatar-circle">MK</span>
+            <span>Maya K. &middot; Product Designer</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-form">
+        <div class="mb-4 anim-fade-up">
+          <h1 class="h3 mb-2">Sign in</h1>
+          <p class="text-muted mb-0">
+            New here?
+            <a routerLink="/register" class="fw-semibold">Create an account</a>
+          </p>
+        </div>
+
+        @if (errorMsg(); as msg) {
+          <div class="alert alert-danger d-flex align-items-center py-2 mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span class="small mb-0">{{ msg }}</span>
+          </div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="mb-3">
+            <label for="email" class="form-label small fw-semibold">Email address</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                formControlName="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                [class.is-invalid]="form.controls.email.touched && form.controls.email.invalid"
+              />
+              <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="password" class="form-label small fw-semibold mb-0">Password</label>
+              <a class="small text-decoration-none">Forgot?</a>
+            </div>
+            <div class="input-group mt-1">
+              <span class="input-group-text"><i class="bi bi-lock"></i></span>
+              <input
+                id="password"
+                [type]="showPassword() ? 'text' : 'password'"
+                class="form-control"
+                formControlName="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid"
+              />
+              <span
+                class="input-group-text password-toggle"
+                role="button"
+                tabindex="0"
+                (click)="togglePassword()"
+                (keydown.enter)="togglePassword()"
+                aria-label="Toggle password visibility"
+              >
+                <i class="bi" [class.bi-eye]="!showPassword()" [class.bi-eye-slash]="showPassword()"></i>
+              </span>
+              <div class="invalid-feedback">Password must be at least 6 characters.</div>
+            </div>
+          </div>
+
+          <div class="form-check mb-4 mt-3">
+            <input class="form-check-input" type="checkbox" id="remember" />
+            <label class="form-check-label small text-muted" for="remember">
+              Remember me on this device
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100" [disabled]="submitting()">
+            @if (submitting()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              <span>Signing in&hellip;</span>
+            } @else {
+              <i class="bi bi-box-arrow-in-right me-2"></i>
+              <span>Sign in</span>
+            }
+          </button>
+
+          <div class="divider-text">or</div>
+
+          <a routerLink="/register" class="btn btn-outline-primary w-100">
+            <i class="bi bi-person-plus me-2"></i>
+            Create a new account
+          </a>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

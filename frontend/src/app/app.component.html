@@ -1,0 +1,141 @@
+<nav class="navbar navbar-expand-lg nav-glass sticky-top" [class.is-scrolled]="scrolled()">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" routerLink="/">
+      <app-logo [size]="36"></app-logo>
+      <span class="fs-5">G-AI</span>
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNav"
+      aria-controls="mainNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        @if (auth.isLoggedIn()) {
+          <li class="nav-item dropdown">
+            <button
+              class="btn btn-link p-1 d-flex align-items-center gap-2 text-decoration-none dropdown-toggle"
+              type="button"
+              id="userMenuToggle"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <span class="avatar-circle">{{ initials() }}</span>
+              <span class="d-none d-lg-inline text-dark fw-semibold">
+                {{ auth.currentUser()?.full_name }}
+              </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
+              <li>
+                <div class="user-menu-header">
+                  <div class="fw-semibold text-dark">{{ auth.currentUser()?.full_name }}</div>
+                  <div class="text-muted small text-truncate">
+                    {{ auth.currentUser()?.email }}
+                  </div>
+                </div>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/profile">
+                  <i class="bi bi-person-gear"></i>
+                  <span>Edit profile</span>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider my-1" /></li>
+              <li>
+                <button class="dropdown-item text-danger" type="button" (click)="logout()">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <span>Log out</span>
+                </button>
+              </li>
+            </ul>
+          </li>
+        } @else {
+          <li class="nav-item">
+            <a class="nav-link px-3" routerLink="/login" routerLinkActive="active">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary btn-sm px-3" routerLink="/register">
+              <i class="bi bi-person-plus me-1"></i>
+              Register
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <router-outlet />
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <a routerLink="/" class="d-inline-flex align-items-center gap-2 text-white text-decoration-none fw-bold fs-5 mb-3">
+          <app-logo [size]="36" [glow]="true"></app-logo>
+          <span>G-AI</span>
+        </a>
+        <p style="max-width: 340px;">
+          The beautifully simple AI workspace for modern teams. Focus,
+          security, and delight &mdash; by default.
+        </p>
+        <div class="socials mt-3">
+          <a href="#" aria-label="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" aria-label="GitHub"><i class="bi bi-github"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <a href="#" aria-label="Discord"><i class="bi bi-discord"></i></a>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6>Product</h6>
+        <ul class="list-unstyled">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#">Roadmap</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Company</h6>
+        <ul class="list-unstyled">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-4">
+        <h6>Stay in the loop</h6>
+        <p class="small mb-3">
+          Get product updates and design deep-dives &mdash; roughly once a month.
+        </p>
+        <form class="footer-newsletter d-flex gap-2" (submit)="$event.preventDefault()">
+          <input type="email" placeholder="you@example.com" class="flex-grow-1" />
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-send"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <hr class="my-4" style="border-color: rgba(255,255,255,0.08);" />
+    <div class="d-flex flex-wrap justify-content-between gap-2 small">
+      <div>&copy; {{ currentYear }} G-AI &middot; Crafted with care.</div>
+      <div class="d-flex gap-3">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+  </div>
+</footer>
