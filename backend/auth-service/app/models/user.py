@@ -12,6 +12,7 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=6, max_length=128)
     full_name: str = Field(min_length=1, max_length=120)
     phone: str = Field(min_length=3, max_length=30)
+    address: str = Field(min_length=1, max_length=200)
 
 
 class UserLogin(BaseModel):

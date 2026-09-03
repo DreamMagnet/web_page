@@ -65,6 +65,7 @@ def create_user(payload: UserCreate) -> tuple[UserPublic, str]:
         "password_hash": hash_password(payload.password),
         "full_name": payload.full_name,
         "phone": payload.phone,
+        "address": payload.address,
         "session_token": token,
         "created_at": now,
         "updated_at": now,
