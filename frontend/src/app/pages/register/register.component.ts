@@ -38,6 +38,7 @@ export class RegisterComponent {
       full_name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(120)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
+      address: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(200)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirm: ['', [Validators.required]],
     },
