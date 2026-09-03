@@ -2,7 +2,8 @@
 
 A small end-to-end web app with:
 
-- **Backend**: FastAPI on Python 3.11, persisting users in a JSON file.
+- **Backend**: two FastAPI microservices on Python 3.11 (auth + profile),
+  sharing a single JSON user store.
 - **Frontend**: Angular 18 standalone components + Bootstrap 5.
 
 Screens: **Landing**, **Register**, **Login**, **Edit Profile**.
@@ -14,27 +15,51 @@ via the `X-Session-Id` header on every request.
 ## Repo layout
 
 ```
-backend/     # FastAPI service (see backend/README.md)
-frontend/    # Angular app     (see frontend/README.md)
+backend/                 # FastAPI microservices (see backend/README.md)
+  auth-service/          #   port 8001 — register / login / logout
+  profile-service/       #   port 8002 — profile CRUD + landing content
+  data/users.json        #   shared user store
+frontend/                # Angular app (see frontend/README.md)
 ```
 
 ## Run it (Windows PowerShell)
 
-Open **two terminals**:
+The backend is two independent services that share one virtualenv. Open
+**three terminals**.
 
-### Terminal 1 — backend
+First, create the shared venv and install dependencies once:
 
 ```powershell
 cd backend
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+pip install -r auth-service\requirements.txt
 ```
 
-Swagger UI: http://localhost:8000/docs
+> Behind a corporate proxy that breaks TLS, add
+> `--trusted-host pypi.org --trusted-host files.pythonhosted.org` to `pip install`.
 
-### Terminal 2 — frontend
+### Terminal 1 — auth-service (port 8001)
+
+```powershell
+cd backend\auth-service
+..\.venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload --port 8001
+```
+
+Swagger UI: http://localhost:8001/docs
+
+### Terminal 2 — profile-service (port 8002)
+
+```powershell
+cd backend\profile-service
+..\.venv\Scripts\Activate.ps1
+uvicorn app.main:app --reload --port 8002
+```
+
+Swagger UI: http://localhost:8002/docs
+
+### Terminal 3 — frontend
 
 ```powershell
 cd frontend
@@ -58,7 +83,10 @@ Users are stored in `backend/data/users.json`. Passwords are hashed with bcrypt
 
 ## Notes
 
-- CORS is configured for `http://localhost:4200` and allows the custom
-  `X-Session-Id` header.
-- To reset all users, stop the backend, delete `backend/data/users.json`, then
+- The frontend talks to the auth-service at `http://localhost:8001/api` and the
+  profile-service at `http://localhost:8002/api` (see
+  `frontend/src/environments/environment.ts`).
+- CORS on both services is configured for `http://localhost:4200` and allows the
+  custom `X-Session-Id` header.
+- To reset all users, stop both services, delete `backend/data/users.json`, then
   restart.
