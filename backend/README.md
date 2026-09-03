@@ -21,6 +21,7 @@ backend/
 | POST   | `/api/auth/register`  | —    | Create account + login     |
 | POST   | `/api/auth/login`     | —    | Log in, get session token  |
 | POST   | `/api/auth/logout`    | Yes  | Revoke current session     |
+| GET    | `/api/auth/profile`   | Yes  | Fetch profile via profile-service |
 | GET    | `/health`             | —    | Liveness probe             |
 
 ### profile-service (port 8002)
@@ -72,6 +73,7 @@ Both services read the same environment variables:
 | -------------- | -------------------------- | ---------------------------------------- |
 | `DATA_FILE`    | `data/users.json`          | Path (relative to `backend/`) to the shared user store |
 | `CORS_ORIGINS` | `http://localhost:4200`    | Comma-separated list of allowed origins  |
+| `PROFILE_SERVICE_URL` | `http://localhost:8002` | Base URL used by auth-service when `/api/auth/profile` calls profile-service |
 
 ## Data
 

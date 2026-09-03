@@ -28,7 +28,7 @@ def _to_public(record: dict) -> UserPublic:
         id=record["id"],
         email=record["email"],
         full_name=record["full_name"],
-        phone=record["phone"],
+        phone=record.get("phone"),
         created_at=record["created_at"],
         updated_at=record["updated_at"],
     )
@@ -64,7 +64,6 @@ def create_user(payload: UserCreate) -> tuple[UserPublic, str]:
         "email": payload.email,
         "password_hash": hash_password(payload.password),
         "full_name": payload.full_name,
-        "phone": payload.phone,
         "address": payload.address,
         "session_token": token,
         "created_at": now,

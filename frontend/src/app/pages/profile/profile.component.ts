@@ -22,6 +22,7 @@ export class ProfileComponent {
   readonly errorMsg = signal<string | null>(null);
   readonly successMsg = signal<string | null>(null);
   readonly showPassword = signal(false);
+  readonly profileLoadBlocked = signal(false);
 
   readonly initials = computed(() => {
     const name = this.auth.currentUser()?.full_name ?? '';
@@ -67,6 +68,16 @@ export class ProfileComponent {
     effect(() => {
       const user = this.auth.currentUser();
       if (user) {
+        if (!user.phone) {
+          this.profileLoadBlocked.set(true);
+          this.errorMsg.set('Profile load failed: phone number is missing from registration data.');
+          this.form.disable({ emitEvent: false });
+          return;
+        }
+
+        this.profileLoadBlocked.set(false);
+        this.errorMsg.set(null);
+        this.form.enable({ emitEvent: false });
         this.form.patchValue(
           { full_name: user.full_name, phone: user.phone, new_password: '' },
           { emitEvent: false },
@@ -80,6 +91,10 @@ export class ProfileComponent {
   }
 
   submit(): void {
+    if (this.profileLoadBlocked()) {
+      this.errorMsg.set('Profile load failed: phone number is missing from registration data.');
+      return;
+    }
     if (this.form.invalid || this.submitting()) {
       this.form.markAllAsTouched();
       return;

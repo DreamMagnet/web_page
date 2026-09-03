@@ -23,7 +23,7 @@ def _to_public(record: dict) -> UserPublic:
         id=record["id"],
         email=record["email"],
         full_name=record["full_name"],
-        phone=record["phone"],
+        phone=record.get("phone"),
         created_at=record["created_at"],
         updated_at=record["updated_at"],
     )
@@ -54,6 +54,8 @@ def update_user(token: str, payload: UserUpdate) -> UserPublic:
         record["full_name"] = payload.full_name
     if payload.phone is not None:
         record["phone"] = payload.phone
+    if payload.add is not None:
+        record["add"] = payload.phone
     if payload.new_password is not None:
         record["password_hash"] = hash_password(payload.new_password)
     record["updated_at"] = _now()

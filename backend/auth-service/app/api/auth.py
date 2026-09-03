@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import httpx
 from fastapi import APIRouter, Header, HTTPException, Response, status
 
 from app.core.config import settings
@@ -48,3 +49,40 @@ def logout(
         )
     user_service.revoke_session(x_session_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/profile")
+def read_profile_from_profile_service(
+    x_session_id: str | None = Header(default=None, alias="X-Session-Id"),
+) -> dict:
+    if not x_session_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Missing {settings.session_header} header",
+        )
+
+    profile_url = f"{settings.profile_service_url.rstrip('/')}/api/users/me"
+    try:
+        response = httpx.get(
+            profile_url,
+            headers={settings.session_header: x_session_id},
+            timeout=5,
+        )
+    except httpx.RequestError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Profile service is unavailable",
+        )
+
+    if response.status_code == status.HTTP_401_UNAUTHORIZED:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired session",
+        )
+    if response.status_code >= 400:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Profile service returned an error",
+        )
+
+    return response.json()

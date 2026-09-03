@@ -23,6 +23,7 @@ class Settings:
             if origin.strip()
         )
     )
+    profile_service_url: str = os.getenv("PROFILE_SERVICE_URL", "http://localhost:8002")
     session_header: str = "X-Session-Id"
 
 
